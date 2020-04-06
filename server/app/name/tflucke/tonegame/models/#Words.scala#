@@ -1,0 +1,19 @@
+package name.tflucke.tonegame.models
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import io.getquill.{PostgresAsyncContext, SnakeCase}
+import name.tflucke.tonegame.shared.models.{Word, Tone}
+import javax.inject.{Inject, Singleton}
+import name.tflucke.tonegame.models.Context
+
+@Singleton
+class Words @Inject() ()
+{
+
+  def create(word: Word) =
+    run(words.insert(lift(word)).returning(_.id)).map(newId => word.copy(id = newId))
+
+  def delete(word: Word) = run(words.filter(_.id == lift(word.id)).delete)
+
+  def update(word: Word) = run(words.filter(_.id == lift(word.id)).update(lift(word)))
+}

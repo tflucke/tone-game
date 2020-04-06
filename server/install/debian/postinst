@@ -1,0 +1,26 @@
+#!/bin/sh
+### Package Defined.
+
+# Initializing Database
+# $1 = user
+# $2 = password
+# $3 = database
+addDB() {
+    sudo -upostgres psql -c "DO
+\$x\$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_user WHERE usename = '$1') THEN
+       CREATE USER $1;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '$3') THEN
+       CREATE DATABASE $3;
+    END IF;
+    GRANT ALL PRIVILEGES ON DATABASE $3 TO $1;
+END
+\$x\$;"
+    sudo -upostgres psql -c "CREATE EXTENSION IF NOT EXISTS pgcrypto;"
+}
+
+echo "Setting up database..."
+#addDB "${(packageName in Debian).value}" "test" "${(packageName in Debian).value}"
+addDB "tonegame" "test" "tonegame"

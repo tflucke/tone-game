@@ -1,0 +1,21 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                                   name.tflucke.tonegame.controllers.HomeController.index
+GET     /word/random                        @name.tflucke.tonegame.controllers.WordController.getRandomWord
+GET     /word/group/random                  @name.tflucke.tonegame.controllers.WordController.getRandomWordGroup
+GET     /word/:id                           @name.tflucke.tonegame.controllers.WordController.getWord(id: Long)
+GET     /word/group/:id                     @name.tflucke.tonegame.controllers.WordController.getGrouping(id: Long)
+GET     /word/:id/pronunciation/random      @name.tflucke.tonegame.controllers.WordController.pronounceRandom(id: Long)
+GET     /word/:id/pronunciation/:speaker    @name.tflucke.tonegame.controllers.WordController.pronounce(id: Long, speaker: Int)
+
+# JS script which maps Scala function calls to RESTful API calls
+GET     /api/routes			    name.tflucke.tonegame.controllers.HomeController.clientRoutes()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
+# Forward Webjar requests to the webjar routes
+->      /webjars                            webjars.Routes

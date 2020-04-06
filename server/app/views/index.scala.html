@@ -1,0 +1,24 @@
+@this(webJarsUtil: org.webjars.play.WebJarsUtil)
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tone Game</title>
+  @webJarsUtil.locate("jquery.min.js").script(Map("type" -> "text/javascript"))
+  @webJarsUtil.locate("bootstrap.min.css").css()
+  @webJarsUtil.locate("bootstrap.min.js").script(Map("type" -> "text/javascript"))
+  <script type="text/javascript" src="@name.tflucke.tonegame.controllers.routes.HomeController.clientRoutes"></script>
+  <link rel="shortcut icon" type="image/png"
+	href="@routes.Assets.versioned("images/favicon.png")">
+  @scalajs.html.scripts(
+    "client",
+    routes.Assets.versioned(_).toString,
+    name => getClass.getResource(s"/public/$name") != null
+  )
+</head>
+<body>
+  <audio id="player" controls>
+    Sorry, it looks like your browser doesn't support native audio.
+  </audio>
+  <br />
+</body>
+</html>
