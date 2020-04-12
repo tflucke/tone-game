@@ -3,10 +3,11 @@
 <html>
 <head>
   <title>Tone Game</title>
-  @webJarsUtil.locate("jquery.min.js").script(Map("type" -> "text/javascript"))
+  @webJarsUtil.locate("jquery.min.js").script()
+  <!-- script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script -->
   @webJarsUtil.locate("bootstrap.min.css").css()
-  @webJarsUtil.locate("bootstrap.min.js").script(Map("type" -> "text/javascript"))
-  <script type="text/javascript" src="@name.tflucke.tonegame.controllers.routes.HomeController.clientRoutes"></script>
+  @webJarsUtil.locate("bootstrap.min.js").script()
+  <script src="@name.tflucke.tonegame.controllers.routes.HomeController.clientRoutes"></script>
   <link rel="shortcut icon" type="image/png"
 	href="@routes.Assets.versioned("images/favicon.png")">
   @scalajs.html.scripts(
@@ -14,11 +15,37 @@
     routes.Assets.versioned(_).toString,
     name => getClass.getResource(s"/public/$name") != null
   )
+  <style type="text/css">
+    #content {
+      text-align: center;
+    }
+    #player {
+      margin-top: 1em;
+      margin: 0.2em;
+    }
+    #answers .btn {
+      margin: 0.25em;
+    }
+  </style>
 </head>
 <body>
-  <audio id="player" controls>
-    Sorry, it looks like your browser doesn't support native audio.
-  </audio>
-  <br />
+  <header class="page-header">
+    <nav class="navbar navbar-dark bg-dark">
+      <span class="navbar-brand mb-0 h1">The Tone Game</span>
+    </nav>
+  </header>
+  <div id="content">
+    <audio id="player" preload="auto" autoplay controls>
+      <source src="" />
+      Sorry, it looks like your browser doesn't support native audio.
+    </audio>
+    <div id="answers"></div>
+    <div class="progress" style="margin: 1em auto; width: 25em;">
+      <div id="accuracy" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div>
+      <button id="next-word" class="btn btn-outline-secondary" type="button">New Word</button>
+    </div>
+  </div>
 </body>
 </html>

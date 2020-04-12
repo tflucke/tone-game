@@ -23,18 +23,19 @@ class WordController @Inject()(
   val words = quote(querySchema[Word]("Words"))
   val groups = quote(querySchema[WordGroup]("WordGroups"))
   val pronunciations = quote(querySchema[Pronunciation]("Pronunciations"))
+  val jsonMime = "application/json;charset=UTF-16"
 
   def getRandomWord = Action.async { implicit request: Request[AnyContent] =>
     run(words.sortBy(w => random).take(1)
     ).map(_.headOption) map {
-      case Some(word) => Ok(Json.toJson(word))
+      case Some(word) => Ok(Json.toJson(word)).as(jsonMime)
       case None =>  InternalServerError("Could not find random word.")
     }
   }
 
   def getWord(id: Long) = Action.async { implicit request: Request[AnyContent] =>
     run(words.filter(c => c.id == lift(id)).take(1)).map(_.headOption) map {
-      case Some(word) => Ok(Json.toJson(word))
+      case Some(word) => Ok(Json.toJson(word)).as(jsonMime)
       case None => NotFound(s"No word with id $id")
     }
   }
@@ -44,7 +45,7 @@ class WordController @Inject()(
       groups.sortBy(g => random).take(1).join(words).on(_.id == _.wordGroup)
     ) map {
       case Nil => InternalServerError("Could not find random word")
-      case words => Ok(Json.toJson(words.map(_._2)))
+      case words => Ok(Json.toJson(words.map(_._2))).as(jsonMime)
     }
   }
 
@@ -52,7 +53,7 @@ class WordController @Inject()(
     implicit request: Request[AnyContent] =>
     run(words.filter(c => c.wordGroup == lift(id))) map {
       case Nil => NotFound(s"No word group with id $id")
-      case words => Ok(Json.toJson(words))
+      case words => Ok(Json.toJson(words)).as(jsonMime)
     }
   }
 
@@ -63,7 +64,8 @@ class WordController @Inject()(
       p.speaker == lift(speaker)
     ).take(1)).map(_.headOption) map {
       case None => NotFound(s"No pronunciation from speaker $speaker for word $id")
-      case Some(pronunciation) => Ok(pronunciation.audio).as(pronunciation.mimeType)
+      case Some(pronunciation) => Ok(pronunciation.audio)
+          .as(pronunciation.mimeType)
     }
   }
 
@@ -75,7 +77,8 @@ class WordController @Inject()(
       .take(1)
     ).map(_.headOption) map {
       case None => NotFound(s"No pronunciations for word $id")
-      case Some(pronunciation) => Ok(pronunciation.audio).as(pronunciation.mimeType)
+      case Some(pronunciation) => Ok(pronunciation.audio)
+          .as(pronunciation.mimeType)
     }
   }
 }
