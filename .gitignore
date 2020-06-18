@@ -15,6 +15,9 @@ dist
 .settings
 .DS_Store
 
+# config files
+server/conf/production.conf
+
 # hidden cross project folders
 shared/.js
 shared/.jvm
@@ -23,6 +26,8 @@ shared/.jvm
 .~*
 *~
 *.orig
+\#*\#
+.\#*
 
 # eclipse
 .scala_dependencies

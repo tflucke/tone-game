@@ -24,14 +24,4 @@ class HomeController @Inject()(
   def index() = Action { implicit request: Request[AnyContent] =>
     Ok(indexTemplate())
   }
-
-  def clientRoutes() = Action { implicit request =>
-    import play.api.routing._
-    Ok(
-      JavaScriptReverseRouter("jsRoutes")(
-        routes.javascript.WordController.getRandomWordGroup,
-        routes.javascript.WordController.pronounceRandom
-      )
-    ).as("text/javascript")
-  }
 }

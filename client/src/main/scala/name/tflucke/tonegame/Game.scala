@@ -7,6 +7,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import net.exoego.scalajs.jquery.{JQuery,JQueryStatic}
 import net.exoego.scalajs.jquery.JQuery.TriggeredEvent
 import name.tflucke.tonegame.shared.models._
+import name.tflucke.tonegame.controllers.WordController
+
 
 object Game {
   import org.scalajs.dom.raw.HTMLAudioElement
@@ -23,7 +25,7 @@ object Game {
 
   def nextWord(): Unit = {
     JQueryStatic("#next-word").hide()
-    WordController.getRandomWordGroup().onComplete(_ match {
+    WordController.getRandomWordGroup()().onComplete(_ match {
       case Success(words) => setWords(words)
       case Failure(error) => println(error)
     })
@@ -40,7 +42,7 @@ object Game {
   }
 
   def audioPlayer(word: Word): Unit = {
-    JQueryStatic("source").attr("src", WordController.Routes.pronounceRandom(word.id).url)
+    JQueryStatic("source").attr("src", WordController.pronounceRandom(word.id).url)
     val player = JQueryStatic("#player")(0).asInstanceOf[HTMLAudioElement]
     player.load()
   }

@@ -3,7 +3,7 @@ val ScalaJSVersion = Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.0.0")
 
 import DebianConstants._
 
-lazy val server = (project in file("server"))
+lazy val server: Project = (project in file("server"))
   .settings(commonSettings)
   .settings(
     scalaJSProjects := Seq(client),
@@ -57,6 +57,7 @@ lazy val server = (project in file("server"))
 lazy val client = (project in file("client"))
   .settings(commonSettings)
   .settings(
+    Compile / generateJsRoutes / fileInputs += (server / baseDirectory).value.toGlob / "conf" / "routes",
     scalaJSUseMainModuleInitializer := true,
     libraryDependencies ++= Seq(
       // Wrapper library for JS dom to scala
@@ -70,15 +71,17 @@ lazy val client = (project in file("client"))
       "net.exoego" %%% "scalajs-jquery3" % "1.0.0",
       // Json Parsing
       // Wiki:
-      (if (ScalaJSVersion.startsWith("0.6.")) "com.typesafe.play" %%% "play-json" % "2.7.4"
-       else                                   "com.malliina" %%% "play-json" % "2.8.1"),
+      (if (ScalaJSVersion.startsWith("0.6.")) "com.typesafe.play" %%% "play-json" % "2.8.1"
+       else                                   "com.typesafe.play" %%% "play-json" % "2.9.0"),
       // Easy DOM creation/manipulation
       // Wiki: https://www.lihaoyi.com/scalatags/
       // Scaladoc: https://www.lihaoyi.com/scalatags/api/index.html
       //"com.lihaoyi" %%% "scalatags" % "0.8.6"
+      // Needed for the webroutes to work
+      "name.tflucke" %%% "web-routes" % "0.1.0"
     ),
   )
-  .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
+  .enablePlugins(ScalaJSPlugin, ScalaJSWeb, WebRoutes)
   .dependsOn(sharedJs)
 
 lazy val shared = crossProject(JSPlatform, JVMPlatform)

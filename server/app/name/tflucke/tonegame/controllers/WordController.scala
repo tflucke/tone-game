@@ -57,7 +57,7 @@ class WordController @Inject()(
     }
   }
 
-  def pronounce(id: Long, speaker: Int) = Action.async {
+  def pronounce(id: Long, speaker: Long) = Action.async {
     implicit request: Request[AnyContent] =>
     run(pronunciations.filter(p =>
       p.word == lift(id) &&
