@@ -42,7 +42,8 @@ class WordController @Inject()(
 
   def getRandomWordGroup = Action.async { implicit request: Request[AnyContent] =>
     run(
-      groups.sortBy(g => random).take(1).join(words).on(_.id == _.wordGroup)
+      groups.filter(g => g.enabled).sortBy(g => random).take(1).join(words)
+        .on(_.id == _.wordGroup)
     ) map {
       case Nil => InternalServerError("Could not find random word")
       case words => Ok(Json.toJson(words.map(_._2))).as(jsonMime)

@@ -1,0 +1,16 @@
+<audio id="player" preload="auto" autoplay controls>
+  <!-- TODO: Add this dynamically.  Currently causes extra network call. -->
+  <source src="" />
+  Sorry, it looks like your browser doesn't support native audio.
+</audio>
+<div id="answers"></div>
+<div class="progress" style="margin: 1em auto; width: 25em;">
+  <div id="accuracy" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+       class="progress-bar progress-bar-striped progress-bar-animated"></div>
+</div>
+<div>
+  <button id="next-word" class="btn btn-outline-secondary" type="button"
+          onclick="Game.nextWord()">
+    New Word
+  </button>
+</div>

@@ -5,5 +5,6 @@ package name.tflucke.tonegame.shared.models
  */
 case class WordGroup (
   val id: Long,
-  val rootSpelling: String
+  val rootSpelling: String,
+  val enabled: Boolean
 )

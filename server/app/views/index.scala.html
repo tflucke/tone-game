@@ -9,14 +9,12 @@
   @webJarsUtil.locate("bootstrap.min.js").script()
   <link rel="shortcut icon" type="image/png"
 	href="@routes.Assets.versioned("images/favicon.png")">
-  @scalajs.html.scripts(
-    "client",
-    routes.Assets.versioned(_).toString,
-    name => getClass.getResource(s"/public/$name") != null
-  )
   <style type="text/css">
     #content {
       text-align: center;
+    }
+    h1, h2, h3 {
+      padding-left: 0.5em;
     }
     #player {
       margin-top: 1em;
@@ -29,22 +27,30 @@
 </head>
 <body>
   <header class="page-header">
-    <nav class="navbar navbar-dark bg-dark">
-      <span class="navbar-brand mb-0 h1">The Tone Game</span>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#" onclick="Nav.home()">The Tone Game</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse"
+              data-target="#navbarNav" aria-controls="navbarNav"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <a href="#" class="navbar-brand"></a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="Nav.about()">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="Nav.contrib()">Contribute</a>
+          </li>
+        </ul>
     </nav>
   </header>
-  <div id="content">
-    <audio id="player" preload="auto" autoplay controls>
-      <source src="" />
-      Sorry, it looks like your browser doesn't support native audio.
-    </audio>
-    <div id="answers"></div>
-    <div class="progress" style="margin: 1em auto; width: 25em;">
-      <div id="accuracy" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-    <div>
-      <button id="next-word" class="btn btn-outline-secondary" type="button">New Word</button>
-    </div>
-  </div>
+  <div id="content"></div>
+  @scalajs.html.scripts(
+    "client",
+    routes.Assets.versioned(_).toString,
+    name => getClass.getResource(s"/public/$name") != null
+  )
 </body>
 </html>

@@ -2,14 +2,16 @@ package name.tflucke.tonegame
 
 import org.scalajs.dom.{XMLHttpRequest,html,document}
 import org.scalajs.dom.raw.{HTMLDocument,EventTarget}
+import scala.scalajs.js.annotation.{JSExport,JSExportTopLevel}
 import scala.util.{Random,Try,Success,Failure}
 import scala.concurrent.ExecutionContext.Implicits.global
-import net.exoego.scalajs.jquery.{JQuery,JQueryStatic}
+import scala.concurrent.Future
+import net.exoego.scalajs.jquery.{JQuery,JQueryStatic => $}
 import net.exoego.scalajs.jquery.JQuery.TriggeredEvent
 import name.tflucke.tonegame.shared.models._
 import name.tflucke.tonegame.controllers.WordController
 
-
+@JSExportTopLevel(name="Game")
 object Game {
   import org.scalajs.dom.raw.HTMLAudioElement
   var totalCorrect = 0
@@ -17,15 +19,13 @@ object Game {
   var firstGuess   = true
   
   def main(args: Array[String]): Unit = {
-    JQueryStatic(document).ready($ => {
-      JQueryStatic("#next-word").click(() => nextWord)
-      nextWord()
-    })
+    $(document).ready($ => { Nav.home() })
   }
 
+  @JSExport
   def nextWord(): Unit = {
-    JQueryStatic("#next-word").hide()
-    WordController.getRandomWordGroup()().onComplete(_ match {
+    $("#next-word").hide()
+    WordController.getRandomWordGroup()() andThen({
       case Success(words) => setWords(words)
       case Failure(error) => println(error)
     })
@@ -33,7 +33,7 @@ object Game {
 
   def setWords(group: Seq[Word]): Unit = {
     firstGuess = true
-    val doc = JQueryStatic("#answers").empty()
+    val doc = $("#answers").empty()
     val answer = group(Random.nextInt(group.length))
     audioPlayer(answer)
     for (word <- group) {
@@ -42,18 +42,18 @@ object Game {
   }
 
   def audioPlayer(word: Word): Unit = {
-    JQueryStatic("source").attr("src", WordController.pronounceRandom(word.id).url)
-    val player = JQueryStatic("#player")(0).asInstanceOf[HTMLAudioElement]
+    $("source").attr("src", WordController.pronounceRandom(word.id).url)
+    val player = $("#player")(0).asInstanceOf[HTMLAudioElement]
     player.load()
   }
 
   def setProgress(value: Double): Unit = {
     val percentage = Math.round(100*value).toString
-    JQueryStatic("#accuracy").attr("percentage", percentage).css("width", percentage+"%")
+    $("#accuracy").attr("percentage", percentage).css("width", percentage+"%")
   }
 
   def toneButton(word: Word, correct: Boolean): JQuery[html.Element] = {
-    val btn = JQueryStatic("<button>")
+    val btn = $("<button>")
       .addClass("btn")
       .addClass("btn-outline-secondary")
       .attr("type", "button")
@@ -67,7 +67,7 @@ object Game {
           setProgress(totalCorrect*1.0f/totalGuessed)
         }
         btn.removeClass("btn-outline-secondary").addClass("btn-success")
-        JQueryStatic("#next-word").show()
+        $("#next-word").show()
       })
     }
     else {

@@ -54,10 +54,12 @@ lazy val server: Project = (project in file("server"))
   .enablePlugins(PlayScala)
   .dependsOn(sharedJvm)
 
+import com.tflucke.webroutes.endpoints.PlayEndpointFile
+
 lazy val client = (project in file("client"))
   .settings(commonSettings)
   .settings(
-    Compile / generateJsRoutes / fileInputs += (server / baseDirectory).value.toGlob / "conf" / "routes",
+    Compile / apiDefinitions += PlayEndpointFile(server),
     scalaJSUseMainModuleInitializer := true,
     libraryDependencies ++= Seq(
       // Wrapper library for JS dom to scala
@@ -77,11 +79,9 @@ lazy val client = (project in file("client"))
       // Wiki: https://www.lihaoyi.com/scalatags/
       // Scaladoc: https://www.lihaoyi.com/scalatags/api/index.html
       //"com.lihaoyi" %%% "scalatags" % "0.8.6"
-      // Needed for the webroutes to work
-      "name.tflucke" %%% "web-routes" % "0.1.0"
     ),
   )
-  .enablePlugins(ScalaJSPlugin, ScalaJSWeb, WebRoutes)
+  .enablePlugins(ScalaJSPlugin, ScalaJSWeb, RestRPC)
   .dependsOn(sharedJs)
 
 lazy val shared = crossProject(JSPlatform, JVMPlatform)
@@ -95,7 +95,7 @@ lazy val sharedJs = shared.js
 lazy val commonSettings = Seq(
   //scalaVersion := "2.13.1",
   organization := "name.tflucke",
-  version      := "0.0.0",
+  version      := "0.1.0",
   maintainer := "Thomas Flucke <admin@tflucke.name>",
   libraryDependencies ++= Seq(
     // Json Parsing
